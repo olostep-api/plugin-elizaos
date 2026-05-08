@@ -1,5 +1,6 @@
 import {
   type Action,
+  type ActionResult,
   type HandlerCallback,
   type IAgentRuntime,
   type Memory,
@@ -75,7 +76,7 @@ export const olostepSearchAction: Action = {
     _state?: State,
     _options?: unknown,
     callback?: HandlerCallback
-  ): Promise<unknown> => {
+  ): Promise<ActionResult> => {
     const apiKey = runtime.getSetting('OLOSTEP_API_KEY');
 
     if (typeof apiKey !== 'string' || apiKey.trim().length === 0) {
@@ -84,7 +85,11 @@ export const olostepSearchAction: Action = {
       if (callback) {
         await callback({ text: errorText });
       }
-      return false;
+      return {
+        success: false,
+        text: errorText,
+        error: errorText,
+      };
     }
 
     const query = message.content?.text?.trim();
@@ -92,7 +97,11 @@ export const olostepSearchAction: Action = {
       if (callback) {
         await callback({ text: 'No search query provided.' });
       }
-      return false;
+      return {
+        success: false,
+        text: 'No search query provided.',
+        error: 'No search query provided.',
+      };
     }
 
     try {
@@ -110,7 +119,11 @@ export const olostepSearchAction: Action = {
         if (callback) {
           await callback({ text: errorText });
         }
-        return false;
+        return {
+          success: false,
+          text: errorText,
+          error: errorText,
+        };
       }
 
       const data = (await response.json()) as OlostepSearchResponse;
@@ -121,20 +134,31 @@ export const olostepSearchAction: Action = {
         await callback({ text: responseText });
       }
 
-      return true;
+      return {
+        success: true,
+        text: responseText,
+        data: {
+          query,
+          links,
+        },
+      };
     } catch (error: unknown) {
       const messageText = error instanceof Error ? error.message : String(error);
       if (callback) {
         await callback({ text: `Search error: ${messageText}` });
       }
-      return false;
+      return {
+        success: false,
+        text: `Search error: ${messageText}`,
+        error: messageText,
+      };
     }
   },
   examples: [
     [
-      { user: 'user', content: { text: 'Search for the latest news about AI agents' } },
+      { name: 'user', content: { text: 'Search for the latest news about AI agents' } },
       {
-        user: 'assistant',
+        name: 'assistant',
         content: {
           text: 'Here are the top results for "latest news about AI agents":...',
           action: 'OLOSTEP_SEARCH',
@@ -142,9 +166,9 @@ export const olostepSearchAction: Action = {
       },
     ],
     [
-      { user: 'user', content: { text: 'Look up elizaOS on the web' } },
+      { name: 'user', content: { text: 'Look up elizaOS on the web' } },
       {
-        user: 'assistant',
+        name: 'assistant',
         content: {
           text: 'Here are the top results for "elizaOS":...',
           action: 'OLOSTEP_SEARCH',
