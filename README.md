@@ -32,6 +32,33 @@ Get your API key at https://www.olostep.com/dashboard
 
 ## Usage
 
+Add the plugin to your Eliza character config, then start the agent with the normal ElizaOS flow:
+
+```ts
+import type { Character } from '@elizaos/core';
+
+export const character: Character = {
+  name: 'MyAgent',
+  plugins: [
+    '@elizaos/plugin-bootstrap',
+    '@elizaos/plugin-openai',
+    '@olostep/plugin-web-search',
+  ],
+};
+```
+
+Then run your project:
+
+```bash
+elizaos start
+```
+
+Example prompts you can send your agent:
+
+- `Search for the latest news about AI agents`
+- `Look up elizaOS on the web`
+- `Find the official docs for ElizaOS plugins`
+
 Once configured, your agent can use Olostep search when users ask it to search the web, look something up, or find online information.
 
 ## API
