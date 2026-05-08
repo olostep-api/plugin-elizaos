@@ -1,0 +1,35 @@
+{
+  "name": "@olostep/plugin-web-search",
+  "version": "1.0.0",
+  "description": "ElizaOS plugin for Olostep web search via the /searches endpoint",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@elizaos/core": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  },
+  "agentConfig": {
+    "pluginType": "elizaos:plugin:1.0.0",
+    "pluginParameters": {
+      "OLOSTEP_API_KEY": {
+        "type": "string",
+        "description": "API key for Olostep web search"
+      }
+    }
+  }
+}
